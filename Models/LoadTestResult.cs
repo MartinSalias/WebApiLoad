@@ -5,6 +5,7 @@ public class LoadTestResult
     public int ThreadsSpawned { get; init; }
     public Dictionary<int, long> StatusCodes { get; init; } = [];
     public long RequestExceptions { get; init; }
+    public long InFlightDropped { get; init; }
 
     public long TotalSuccess => StatusCodes
         .Where(kv => kv.Key >= 200 && kv.Key < 300)

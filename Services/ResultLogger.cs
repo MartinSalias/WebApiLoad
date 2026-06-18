@@ -29,6 +29,7 @@ public static class ResultLogger
         }
 
         lines.Add($"  Request exceptions (network errors): {result.RequestExceptions}");
+        lines.Add($"  In-flight requests dropped on stop: {result.InFlightDropped}");
         lines.Add($"  Successful calls: {result.TotalSuccess}");
         lines.Add($"  Failed calls:     {result.TotalFailed}");
         lines.Add($"  Total requests:   {result.TotalRequests}");

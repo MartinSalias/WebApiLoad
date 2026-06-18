@@ -59,6 +59,7 @@ foreach (var kv in result.StatusCodes.OrderBy(kv => kv.Key))
 }
 
 Console.WriteLine($"  Request exceptions (network errors): {result.RequestExceptions}");
+Console.WriteLine($"  In-flight requests dropped on stop: {result.InFlightDropped}");
 Console.WriteLine($"  Successful calls: {result.TotalSuccess}");
 Console.WriteLine($"  Failed calls:     {result.TotalFailed}");
 Console.WriteLine($"  Total requests:   {result.TotalRequests}");
