@@ -62,8 +62,6 @@ public class LoadTester(HttpClient httpClient, LoadTestConfig config)
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                _failureDetails.Enqueue(
-                    $"[{DateTime.Now:HH:mm:ss.fff}] Request cancelled (test duration expired)");
                 break;
             }
             catch (Exception ex)
