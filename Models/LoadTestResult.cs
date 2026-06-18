@@ -6,6 +6,7 @@ public class LoadTestResult
     public long RequestsStarted { get; init; }
     public Dictionary<int, long> StatusCodes { get; init; } = [];
     public Dictionary<string, long> ExceptionCounts { get; init; } = [];
+    public List<string> FailureDetails { get; init; } = [];
 
     public long TotalStatusCodes => StatusCodes.Values.Sum();
     public long TotalExceptions => ExceptionCounts.Values.Sum();

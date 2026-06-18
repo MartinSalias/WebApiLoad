@@ -39,6 +39,17 @@ public static class ResultLogger
             }
         }
 
+        if (result.FailureDetails.Count > 0)
+        {
+            lines.Add($"");
+            lines.Add($"  Failure details ({result.FailureDetails.Count}):");
+
+            foreach (var detail in result.FailureDetails)
+            {
+                lines.Add($"    {detail}");
+            }
+        }
+
         lines.Add($"  In-flight requests dropped on stop: {result.InFlightDropped}");
         lines.Add($"  Successful calls: {result.TotalSuccess}");
         lines.Add($"  Failed calls:     {result.TotalFailed}");

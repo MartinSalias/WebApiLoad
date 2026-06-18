@@ -10,6 +10,7 @@ A lightweight HTTP load testing tool for .NET 9. Spawns concurrent workers that 
 - Per-HTTP-status-code counting via `ConcurrentDictionary`
 - Per-exception-type breakdown (e.g. `HttpRequestException`, `Timeout`)
 - Tracks total requests started vs completed — `InFlightDropped` shows requests initiated but never completed
+- Logs per-call failure details: HTTP errors (code + reason) and exceptions (type + message)
 - Timestamped log file with full summary
 
 ## How to use
@@ -49,7 +50,7 @@ A lightweight HTTP load testing tool for .NET 9. Spawns concurrent workers that 
 
 ## Output
 
-Console and log file (`load-test-result-YYYYMMDD-HHmmss.log`):
+Console (summary only):
 
 ```
   Threads spawned:  100
@@ -65,6 +66,17 @@ Console and log file (`load-test-result-YYYYMMDD-HHmmss.log`):
   Successful calls: 4132
   Failed calls:     22
   Total requests:   4154
+```
+
+Log file (`load-test-result-YYYYMMDD-HHmmss.log`) — same summary plus per-call failure details:
+
+```
+  Failure details (10):
+    [15:42:25.503] Request cancelled (test duration expired)
+    [15:42:25.504] Request cancelled (test duration expired)
+    [15:42:25.505] HTTP 500 Internal Server Error
+    [15:42:25.506] HttpRequestException: Connection refused
+    [15:42:25.507] TaskCanceledException: The request was canceled due to the configured HttpClient.Timeout of 30 seconds elapsing.
 ```
 
 ## Project structure
