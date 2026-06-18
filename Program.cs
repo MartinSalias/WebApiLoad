@@ -51,6 +51,7 @@ await ResultLogger.LogAsync(config, result);
 Console.WriteLine();
 Console.WriteLine($"Summary:");
 Console.WriteLine($"  Threads spawned:  {result.ThreadsSpawned}");
+Console.WriteLine($"  Requests started: {result.RequestsStarted}");
 Console.WriteLine($"  Status code breakdown:");
 
 foreach (var kv in result.StatusCodes.OrderBy(kv => kv.Key))
@@ -58,7 +59,16 @@ foreach (var kv in result.StatusCodes.OrderBy(kv => kv.Key))
     Console.WriteLine($"    {kv.Key}: {kv.Value}");
 }
 
-Console.WriteLine($"  Request exceptions (network errors): {result.RequestExceptions}");
+if (result.ExceptionCounts.Count > 0)
+{
+    Console.WriteLine($"  Exception breakdown:");
+
+    foreach (var kv in result.ExceptionCounts.OrderByDescending(kv => kv.Value))
+    {
+        Console.WriteLine($"    {kv.Key}: {kv.Value}");
+    }
+}
+
 Console.WriteLine($"  In-flight requests dropped on stop: {result.InFlightDropped}");
 Console.WriteLine($"  Successful calls: {result.TotalSuccess}");
 Console.WriteLine($"  Failed calls:     {result.TotalFailed}");

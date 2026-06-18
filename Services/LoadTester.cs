@@ -6,14 +6,14 @@ namespace ApiLoadTest.Services;
 public class LoadTester(HttpClient httpClient, LoadTestConfig config)
 {
     private readonly ConcurrentDictionary<int, long> _statusCounts = new();
-    private long _requestExceptions;
-    private long _inFlightDropped;
+    private readonly ConcurrentDictionary<string, long> _exceptionCounts = new();
+    private long _requestsStarted;
 
     public async Task<LoadTestResult> RunAsync()
     {
         _statusCounts.Clear();
-        _requestExceptions = 0;
-        _inFlightDropped = 0;
+        _exceptionCounts.Clear();
+        _requestsStarted = 0;
 
         using var cts = new CancellationTokenSource(
             TimeSpan.FromSeconds(config.DurationSeconds));
@@ -32,9 +32,9 @@ public class LoadTester(HttpClient httpClient, LoadTestConfig config)
         return new LoadTestResult
         {
             ThreadsSpawned = config.ThreadCount,
+            RequestsStarted = Interlocked.Read(ref _requestsStarted),
             StatusCodes = _statusCounts.ToDictionary(kv => kv.Key, kv => kv.Value),
-            RequestExceptions = Interlocked.Read(ref _requestExceptions),
-            InFlightDropped = Interlocked.Read(ref _inFlightDropped)
+            ExceptionCounts = _exceptionCounts.ToDictionary(kv => kv.Key, kv => kv.Value)
         };
     }
 
@@ -42,6 +42,8 @@ public class LoadTester(HttpClient httpClient, LoadTestConfig config)
     {
         while (!ct.IsCancellationRequested)
         {
+            Interlocked.Increment(ref _requestsStarted);
+
             try
             {
                 using var response = await httpClient.GetAsync(config.EndpointUrl, ct);
@@ -50,17 +52,12 @@ public class LoadTester(HttpClient httpClient, LoadTestConfig config)
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                Interlocked.Increment(ref _inFlightDropped);
                 break;
             }
-            catch (OperationCanceledException)
+            catch (Exception ex)
             {
-                Interlocked.Increment(ref _requestExceptions);
-                break;
-            }
-            catch
-            {
-                Interlocked.Increment(ref _requestExceptions);
+                var name = ex.GetType().Name;
+                _exceptionCounts.AddOrUpdate(name, 1, (_, count) => count + 1);
             }
         }
     }

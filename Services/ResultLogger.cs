@@ -20,6 +20,7 @@ public static class ResultLogger
             $"",
             $"Results:",
             $"  Threads spawned:  {result.ThreadsSpawned}",
+            $"  Requests started: {result.RequestsStarted}",
             $"  Status code breakdown:"
         };
 
@@ -28,7 +29,16 @@ public static class ResultLogger
             lines.Add($"    {kv.Key}: {kv.Value}");
         }
 
-        lines.Add($"  Request exceptions (network errors): {result.RequestExceptions}");
+        if (result.ExceptionCounts.Count > 0)
+        {
+            lines.Add($"  Exception breakdown:");
+
+            foreach (var kv in result.ExceptionCounts.OrderByDescending(kv => kv.Value))
+            {
+                lines.Add($"    {kv.Key}: {kv.Value}");
+            }
+        }
+
         lines.Add($"  In-flight requests dropped on stop: {result.InFlightDropped}");
         lines.Add($"  Successful calls: {result.TotalSuccess}");
         lines.Add($"  Failed calls:     {result.TotalFailed}");

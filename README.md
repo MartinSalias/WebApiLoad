@@ -8,8 +8,8 @@ A lightweight HTTP load testing tool for .NET 9. Spawns concurrent workers that 
 - Optional login flow — obtains a Bearer token and includes it on every request
 - Concurrent workers via `Task.Run` — no external dependencies
 - Per-HTTP-status-code counting via `ConcurrentDictionary`
-- Network exceptions tracked separately from HTTP-level responses
-- Counts in-flight requests dropped when the test timer expires
+- Per-exception-type breakdown (e.g. `HttpRequestException`, `Timeout`)
+- Tracks total requests started vs completed — `InFlightDropped` shows requests initiated but never completed
 - Timestamped log file with full summary
 
 ## How to use
@@ -53,22 +53,25 @@ Console and log file (`load-test-result-YYYYMMDD-HHmmss.log`):
 
 ```
   Threads spawned:  100
+  Requests started: 5000
   Status code breakdown:
     200: 4132
     429: 12
     500: 3
-  Request exceptions (network errors): 0
-  In-flight requests dropped on stop: 2
+  Exception breakdown:
+    HttpRequestException: 5
+    Timeout: 2
+  In-flight requests dropped on stop: 846
   Successful calls: 4132
-  Failed calls:     15
-  Total requests:   4147
+  Failed calls:     22
+  Total requests:   4154
 ```
 
 ## Project structure
 
 ```
 Models/LoadTestConfig.cs     — config model (endpoint, credentials, threads, duration)
-Models/LoadTestResult.cs     — result model (per-code counts, in-flight dropped)
+Models/LoadTestResult.cs     — result model (started, per-code counts, per-exception counts, in-flight dropped)
 Models/LoginResponse.cs      — login API response (token + expiration)
 Services/LoadTester.cs       — spawns workers, tracks counters
 Services/ResultLogger.cs     — writes log file
