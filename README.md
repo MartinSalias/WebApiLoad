@@ -14,7 +14,11 @@ A lightweight HTTP load testing tool for .NET 9. Spawns concurrent workers that 
 
 ## How to use
 
-1. Edit `test-config.json`:
+1. Copy `template-config.json` to `test-config.json` and edit it:
+
+   ```bash
+   cp template-config.json test-config.json
+   ```
 
    Basic (no auth):
    ```json
@@ -70,5 +74,6 @@ Services/LoadTester.cs       — spawns workers, tracks counters
 Services/ResultLogger.cs     — writes log file
 Services/AuthService.cs      — login call, returns Bearer token
 Program.cs                   — entry point
-test-config.json             — runtime configuration
+template-config.json         — config template (copy to test-config.json and edit)
+test-config.json             — local runtime config (gitignored, not tracked)
 ```

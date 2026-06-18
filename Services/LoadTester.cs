@@ -48,9 +48,14 @@ public class LoadTester(HttpClient httpClient, LoadTestConfig config)
                 var code = (int)response.StatusCode;
                 _statusCounts.AddOrUpdate(code, 1, (_, count) => count + 1);
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
                 Interlocked.Increment(ref _inFlightDropped);
+                break;
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.Increment(ref _requestExceptions);
                 break;
             }
             catch

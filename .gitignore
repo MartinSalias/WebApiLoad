@@ -26,5 +26,8 @@ packages/
 Thumbs.db
 Desktop.ini
 
+## Local runtime config
+test-config.json
+
 ## Tool output
 load-test-result-*.log
