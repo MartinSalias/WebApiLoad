@@ -1,0 +1,5 @@
+{
+  "endpointUrl": "http://localhost:5194/customers/random",
+  "threadCount": 10000,
+  "durationSeconds": 5
+}
