@@ -1,5 +1,9 @@
 {
-  "endpointUrl": "http://localhost:5194/customers/random",
-  "threadCount": 10000,
-  "durationSeconds": 5
+  "endpointUrl": "https://yourserver.com/api/data",
+  "loginUrl": "https://yourserver.com/api/login",
+  "userName": "admin",
+  "password": "secret",
+  "companyVATid": "VAT123",
+  "threadCount": 10,
+  "durationSeconds": 30
 }

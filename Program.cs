@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
 using ApiLoadTest.Models;
 using ApiLoadTest.Services;
 
@@ -24,6 +25,16 @@ var httpClient = new HttpClient
 {
     Timeout = TimeSpan.FromSeconds(30)
 };
+
+if (!string.IsNullOrWhiteSpace(config.LoginUrl))
+{
+    Console.WriteLine("Authenticating...");
+    var loginResponse = await AuthService.LoginAsync(config);
+    httpClient.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", loginResponse.Token);
+    Console.WriteLine($"Authenticated. Token expires at {loginResponse.Expiration:yyyy-MM-dd HH:mm:ss}");
+    Console.WriteLine();
+}
 
 var tester = new LoadTester(httpClient, config);
 
